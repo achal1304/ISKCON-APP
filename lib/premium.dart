@@ -42,7 +42,8 @@ class _PremiumCodeState extends State<PremiumCode> {
 
   void addOnStart(dynamic data, bool prem) {
     //if (data == true)
-    Crud().storeData1(widget._user, data, prem);
+    // Crud().storeData1(widget._user, data, prem);
+    Crud().storeDataOfCouponsSignup(widget._user, data, prem);
     // else
     //   Crud().storeData(widget._user);
   }

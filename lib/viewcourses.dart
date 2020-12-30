@@ -47,7 +47,7 @@ class _ViewCoursesState extends State<ViewCourses> {
       appBar: AppBar(
         centerTitle: true,
         title: Text(
-          'View Courses',
+          'Join Courses',
           style: TextStyle(color: Colors.black),
           textScaleFactor: 1.2,
         ),

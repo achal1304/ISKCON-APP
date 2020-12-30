@@ -93,6 +93,15 @@ class Crud {
     });
   }
 
+  storeDataOfCouponsSignup(FirebaseUser user, dynamic data, bool prem) async {
+    DocumentReference documentRef =
+        Firestore.instance.collection("users").document(user.uid);
+    Firestore.instance.runTransaction((transaction) async {
+      await documentRef.updateData({'admin': data ?? false, 'premium': prem});
+      print("Coupon data created");
+    });
+  }
+
   makeAdmin(String name, String mail, String uid) async {
     DocumentReference documentRef =
         Firestore.instance.collection("users").document(uid);

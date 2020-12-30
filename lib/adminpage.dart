@@ -704,7 +704,7 @@ class _AdminPageState extends State<AdminPage> {
               FontAwesomeIcons.podcast,
               size: 28.0,
             ),
-            title: Text('View Audio'),
+            title: Text('Hear Audios'),
             onTap: () {
               Navigator.push(
                 context,
@@ -747,9 +747,9 @@ class _AdminPageState extends State<AdminPage> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => AddCourses(
-                    //widget._user,
-                    //widget._googleSignIn,
-                  ),
+                      //widget._user,
+                      //widget._googleSignIn,
+                      ),
                 ),
               );
             },
@@ -759,7 +759,7 @@ class _AdminPageState extends State<AdminPage> {
               FontAwesomeIcons.bookOpen,
               size: 28.0,
             ),
-            title: Text('View Course'),
+            title: Text('Join Courses'),
             onTap: () {
               Navigator.push(
                 context,
@@ -842,7 +842,6 @@ class _AdminPageState extends State<AdminPage> {
               );
             },
           ),
-
           Divider(
             thickness: 0.5,
           ),

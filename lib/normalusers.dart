@@ -82,7 +82,7 @@ class _NormalUsersState extends State<NormalUsers> {
   //final List<Message> messages = [];
   String tok;
   String data1;
-  bool isuseradmin  = true;
+  bool isuseradmin = true;
 
   @override
   void initState() {
@@ -244,7 +244,7 @@ class _NormalUsersState extends State<NormalUsers> {
                 FontAwesomeIcons.podcast,
                 size: 28.0,
               ),
-              title: Text('View Audio'),
+              title: Text('Hear Audios'),
               onTap: () {
                 Navigator.push(
                   context,
@@ -280,7 +280,7 @@ class _NormalUsersState extends State<NormalUsers> {
                 FontAwesomeIcons.bookOpen,
                 size: 28.0,
               ),
-              title: Text('View Courses'),
+              title: Text('Join Courses'),
               onTap: () {
                 Navigator.push(
                   context,
@@ -307,7 +307,6 @@ class _NormalUsersState extends State<NormalUsers> {
                       //isAdmin: false,
                       widget._user,
                       widget._googleSignIn,
-
                     ),
                   ),
                 );
@@ -327,7 +326,6 @@ class _NormalUsersState extends State<NormalUsers> {
                       //isAdmin: false,
                       widget._user,
                       widget._googleSignIn,
-
                     ),
                   ),
                 );
@@ -433,7 +431,7 @@ class _NormalUsersState extends State<NormalUsers> {
                 size: 23.0,
               ),
               title: Text('Share App'),
-              onTap: () async{
+              onTap: () async {
                 share();
               },
             ),
@@ -861,7 +859,6 @@ class _NormalUsersState extends State<NormalUsers> {
         onSelectNotification: selectNotification);
   }
 
-
   Future onDidReceiveLocalNotification(
       int id, String title, String body, String payload) async {
     // display a dialog with the notification details, tap ok to go to another page
@@ -916,6 +913,7 @@ class _NormalUsersState extends State<NormalUsers> {
     // send key to your server to allow server to use
     // this token to send push notifications
   }
+
   Future<void> share() async {
     await FlutterShare.share(
         title: 'Example share',
