@@ -431,7 +431,7 @@ class Crud {
     });
   }
 
-  updateDOB(FirebaseUser user, String dob, DateTime birthday) async {
+  updateDOB(FirebaseUser user, String dob, Timestamp birthday) async {
     DocumentReference documentRef =
         Firestore.instance.collection("users").document(user.uid);
     Firestore.instance.runTransaction((transaction) async {

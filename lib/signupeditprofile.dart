@@ -87,7 +87,7 @@ class _SignUpEditProfileState extends State<SignUpEditProfile> {
   String gender = "";
   double progress = 0.25;
   String progressPercent = "25%";
-  DateTime birthday = DateTime.now();
+  Timestamp birthday = Timestamp.now();
   Prediction p;
 
   Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
@@ -506,7 +506,7 @@ class _SignUpEditProfileState extends State<SignUpEditProfile> {
                   ).then((date) {
                     setState(() {
                       dob = DateFormat('dd/MM/yyyy').format(date);
-                      birthday = date;
+                      birthday = Timestamp.fromDate(date);
                     });
                     //print('date................' + sdate);
                   });

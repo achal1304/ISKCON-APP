@@ -299,9 +299,9 @@ class _HomePageLState extends State<HomePageL> {
         new DateTime(y, olddate.month, olddate.day, newHr, newMin, newSec);
     Timer(Duration(seconds: 2), () {
       print(DateFormat('dd/MM/yyyy/H:m:s').format(finaldate));
-      if (snapshot.data['DOB'] != " ") {
-        _showNotification(finaldate, nameuser);
-      }
+      // if (snapshot.data['DOB'] != " ") {
+      //   _showNotification(finaldate, nameuser);
+      // }
       // if (DateFormat('dd/MM/yyyy').format(DateTime.now()) ==
       //     snapshot.data['DOB']) {
 
