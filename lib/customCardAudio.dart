@@ -148,6 +148,7 @@ class _CustomCardAudioState extends State<CustomCardAudio> {
         child: Column(
           children: <Widget>[
             ListTile(
+              leading: Icon(Icons.audiotrack),
               title: Text(widget.name),
               onTap: () {
                 Navigator.push(

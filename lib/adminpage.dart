@@ -15,6 +15,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:login/addaudio.dart';
 import 'package:login/addaudio.dart';
 import 'package:login/audio.dart';
+import 'package:login/audio/audiofolders.dart';
 import 'package:login/audiolist.dart';
 import 'package:login/makeadmin.dart';
 import 'package:login/picker.dart';
@@ -709,7 +710,7 @@ class _AdminPageState extends State<AdminPage> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => AudioList(
+                  builder: (context) => AudioFoldersList(
                     isAdmin: true,
                     //widget._user,
                     //widget._googleSignIn,

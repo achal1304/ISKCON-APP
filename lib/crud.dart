@@ -355,9 +355,9 @@ class Crud {
     );
   }
 
-  addAudioUrl(String name, String url) async {
+  addAudioUrl(String name, String url, String chosenfolder) async {
     DocumentReference documentRef =
-        Firestore.instance.collection("audio").document(name);
+        Firestore.instance.collection(chosenfolder).document(name);
     Firestore.instance.runTransaction(
       (transaction) async {
         await documentRef.setData({

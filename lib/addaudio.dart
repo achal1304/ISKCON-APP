@@ -45,13 +45,13 @@ class AddAudioState extends State<AddAudio> {
     upload(fileName, filePath).then((v) {
       setState(() {
         fileUrl = v;
-        Crud().addAudioUrl(name, fileUrl);
+        Crud().addAudioUrl(name, fileUrl, _chosenValue);
       });
     });
   }
 
   Future<String> upload(fileName, filePath) async {
-    String uploadPath = '/audio/$fileName';
+    String uploadPath = '/$_chosenValue/$fileName';
     _extension = fileName.toString().split('.').last;
     StorageReference storageRef =
         FirebaseStorage.instance.ref().child(uploadPath);
@@ -68,6 +68,8 @@ class AddAudioState extends State<AddAudio> {
   String _bytesTransferred(StorageTaskSnapshot snapshot) {
     return '${snapshot.bytesTransferred}/${snapshot.totalByteCount}';
   }
+
+  String _chosenValue = "audio";
 
   @override
   Widget build(BuildContext context) {
@@ -109,6 +111,21 @@ class AddAudioState extends State<AddAudio> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
+            DropdownButton<String>(
+              value: _chosenValue,
+              items: <String>['audio', 'audio1', 'audio3']
+                  .map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+              onChanged: (String value) {
+                setState(() {
+                  _chosenValue = value;
+                });
+              },
+            ),
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
               child: TextFormField(

@@ -7,8 +7,10 @@ import 'customCardAudio.dart';
 
 class AudioList extends StatefulWidget {
   final bool isAdmin;
+  final String foldername;
 
-  const AudioList({Key key, @required this.isAdmin}) : super(key: key);
+  const AudioList({Key key, @required this.isAdmin, this.foldername})
+      : super(key: key);
   @override
   _AudioListState createState() => _AudioListState();
 }
@@ -39,7 +41,8 @@ class _AudioListState extends State<AudioList> {
         child: Container(
           padding: const EdgeInsets.all(10.0),
           child: StreamBuilder<QuerySnapshot>(
-            stream: Firestore.instance.collection('audio').snapshots(),
+            stream:
+                Firestore.instance.collection(widget.foldername).snapshots(),
             builder:
                 (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (snapshot.hasError) return Text('Error: ${snapshot.error}');
