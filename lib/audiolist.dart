@@ -16,15 +16,27 @@ class AudioList extends StatefulWidget {
 }
 
 class _AudioListState extends State<AudioList> {
+  String name = "";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text(
-          'Audio Streams',
-          style: TextStyle(color: Colors.black),
-          textScaleFactor: 1.2,
+        // title: Text(
+        //   'Audio Streams',
+        //   style: TextStyle(color: Colors.black),
+        //   textScaleFactor: 1.2,
+        // ),
+        title: Card(
+          child: TextField(
+            decoration: InputDecoration(
+                prefixIcon: Icon(Icons.search), hintText: 'Search...'),
+            onChanged: (val) {
+              setState(() {
+                name = val;
+              });
+            },
+          ),
         ),
         backgroundColor: Colors.white,
         elevation: 0.5,
@@ -41,11 +53,16 @@ class _AudioListState extends State<AudioList> {
         child: Container(
           padding: const EdgeInsets.all(10.0),
           child: StreamBuilder<QuerySnapshot>(
-            stream:
-                Firestore.instance.collection(widget.foldername).snapshots(),
+            stream: (name != "" && name != null)
+                ? Firestore.instance
+                    .collection(widget.foldername)
+                    .where("searchedKey", arrayContains: name)
+                    .snapshots()
+                : Firestore.instance.collection(widget.foldername).snapshots(),
             builder:
                 (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (snapshot.hasError) return Text('Error: ${snapshot.error}');
+              if (snapshot.data.documents.length == 0) return Text("No Data");
               switch (snapshot.connectionState) {
                 case ConnectionState.waiting:
                   return Text('Loading...');

@@ -7,6 +7,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:login/crud.dart';
+import 'package:random_color/random_color.dart';
 
 class AddAudio extends StatefulWidget {
   AddAudio() : super();
@@ -41,11 +42,15 @@ class AddAudioState extends State<AddAudio> {
   uploadToFirebase(String name) {
     String fileName = _path.split('/').last;
     String filePath = _path;
+    List<String> arr = [];
+    for (int i = 0; i < name.length; i++) {
+      arr.insert(i, name.substring(0, name.length - i));
+    }
 
     upload(fileName, filePath).then((v) {
       setState(() {
         fileUrl = v;
-        Crud().addAudioUrl(name, fileUrl, _chosenValue);
+        Crud().addAudioUrl(name, fileUrl, _chosenValue, arr);
       });
     });
   }
