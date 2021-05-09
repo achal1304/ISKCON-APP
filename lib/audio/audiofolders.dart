@@ -13,7 +13,20 @@ class AudioFoldersList extends StatefulWidget {
 }
 
 class _AudioFoldersListState extends State<AudioFoldersList> {
-  List<String> audiofolders = ["audio3", "audio", "audio1"];
+  getData() async {
+    final QuerySnapshot result =
+        await Firestore.instance.collection('myCollection').getDocuments();
+    audiofolders = result.documents;
+  }
+
+  List<DocumentSnapshot> audiofolders;
+  @override
+  void initState() {
+    getData();
+    super.initState();
+  }
+
+  // List<String> audiofolders = ["audio3", "audio", "audio1"];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,29 +50,68 @@ class _AudioFoldersListState extends State<AudioFoldersList> {
       ),
       body: Center(
         child: Container(
-            padding: const EdgeInsets.all(5.0),
-            child: ListView.builder(
-              itemCount: audiofolders.length,
-              itemBuilder: (context, index) {
-                return Card(
-                  child: ListTile(
-                    leading: Icon(Icons.folder),
-                    title: Text(audiofolders[index]),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => AudioList(
-                            isAdmin: widget.isAdmin,
-                            foldername: audiofolders[index],
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                );
-              },
-            )),
+          padding: const EdgeInsets.all(5.0),
+          child: FutureBuilder<QuerySnapshot>(
+            future: Firestore.instance.collection("FolderNames").getDocuments(),
+            builder:
+                (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+              // if (snapshot.hasData){
+              //   QuerySnapshot documents = snapshot.data;
+              //   List<DocumentSnapshot> docs = documents.documents;
+              // }
+              if (snapshot.hasError) return Text('Error: ${snapshot.error}');
+              if (snapshot.data.documents.length == 0) return Text("No Data");
+              switch (snapshot.connectionState) {
+                case ConnectionState.waiting:
+                  return Text('Loading...');
+                default:
+                  return ListView(
+                    children: snapshot.data.documents
+                        .map((DocumentSnapshot document) {
+                      return Card(
+                          child: ListTile(
+                        leading: Icon(Icons.folder),
+                        title: Text(document["Name"]),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => AudioList(
+                                isAdmin: widget.isAdmin,
+                                foldername: document["Name"],
+                              ),
+                            ),
+                          );
+                        },
+                      ));
+                    }).toList(),
+                  );
+              }
+            },
+          ),
+          //  ListView.builder(
+          //   itemCount: audiofolders.length,
+          //   itemBuilder: (context, index) {
+          //     return Card(
+          //       child: ListTile(
+          //         leading: Icon(Icons.folder),
+          //         title: Text(audiofolders[index]),
+          //         onTap: () {
+          //           Navigator.push(
+          //             context,
+          //             MaterialPageRoute(
+          //               builder: (context) => AudioList(
+          //                 isAdmin: widget.isAdmin,
+          //                 foldername: audiofolders[index],
+          //               ),
+          //             ),
+          //           );
+          //         },
+          //       ),
+          //     );
+          //   },
+          // )
+        ),
       ),
     );
   }

@@ -21,6 +21,7 @@ class AddAudio extends StatefulWidget {
 class AddAudioState extends State<AddAudio> {
   String fileUrl = "";
   String name = "";
+  TextEditingController _chosenValue = TextEditingController();
   TextEditingController controller = TextEditingController();
   String _path;
   Map<String, String> _paths;
@@ -50,13 +51,15 @@ class AddAudioState extends State<AddAudio> {
     upload(fileName, filePath).then((v) {
       setState(() {
         fileUrl = v;
-        Crud().addAudioUrl(name, fileUrl, _chosenValue, arr);
+        Crud().addAudioUrl(name, fileUrl, _chosenValue.text, arr);
+        Crud().addFolderList(_chosenValue.text);
       });
     });
   }
 
   Future<String> upload(fileName, filePath) async {
-    String uploadPath = '/$_chosenValue/$fileName';
+    String foldern = _chosenValue.text;
+    String uploadPath = '/$foldern/$fileName';
     _extension = fileName.toString().split('.').last;
     StorageReference storageRef =
         FirebaseStorage.instance.ref().child(uploadPath);
@@ -74,7 +77,7 @@ class AddAudioState extends State<AddAudio> {
     return '${snapshot.bytesTransferred}/${snapshot.totalByteCount}';
   }
 
-  String _chosenValue = "audio";
+  // String _chosenValue = "audio";
 
   @override
   Widget build(BuildContext context) {
@@ -116,20 +119,40 @@ class AddAudioState extends State<AddAudio> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            DropdownButton<String>(
-              value: _chosenValue,
-              items: <String>['audio', 'audio1', 'audio3']
-                  .map<DropdownMenuItem<String>>((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
-              onChanged: (String value) {
-                setState(() {
-                  _chosenValue = value;
-                });
-              },
+            // DropdownButton<String>(
+            //   value: _chosenValue,
+            //   items: <String>['audio', 'audio1', 'audio3']
+            //       .map<DropdownMenuItem<String>>((String value) {
+            //     return DropdownMenuItem<String>(
+            //       value: value,
+            //       child: Text(value),
+            //     );
+            //   }).toList(),
+            //   onChanged: (String value) {
+            //     setState(() {
+            //       _chosenValue = value;
+            //     });
+            //   },
+            // ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+              child: TextFormField(
+                autofocus: true,
+                controller: _chosenValue,
+                cursorColor: Colors.blue,
+                decoration: InputDecoration(
+                  hintText: 'Create New Folder',
+                  labelStyle: TextStyle(color: Colors.orangeAccent),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.blue,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 15,
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),

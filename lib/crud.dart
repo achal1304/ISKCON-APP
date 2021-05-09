@@ -367,6 +367,17 @@ class Crud {
     );
   }
 
+  addFolderList(String chosenfolder) async {
+    DocumentReference documentRef =
+        Firestore.instance.collection("FolderNames").document(chosenfolder);
+    Firestore.instance.runTransaction(
+      (transaction) async {
+        await documentRef.setData({'Name': chosenfolder});
+        print("Folder Name added!");
+      },
+    );
+  }
+
   updateName(FirebaseUser user, String name) async {
     DocumentReference documentRef =
         Firestore.instance.collection("users").document(user.uid);
