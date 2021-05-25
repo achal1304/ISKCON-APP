@@ -340,7 +340,7 @@ class _WelcomeState extends State<Welcome> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Image(
-              image: AssetImage('assets/fortunate families.png'),
+              image: AssetImage('assets/vital logo.png'),
               height: 200,
               width: 200,
             ),

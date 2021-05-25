@@ -33,7 +33,8 @@ class CustomCardCourses extends StatefulWidget {
       @required this.usercoursename,
       @required this.startdatetimestamp,
       @required this.regform,
-      @required this.payamount}) {
+      @required this.payamount,
+      @required this.started}) {
     c1 = context;
   }
 
@@ -52,6 +53,7 @@ class CustomCardCourses extends StatefulWidget {
   final startdatetimestamp;
   final regform;
   final int payamount;
+  final started;
 
   @override
   _CustomCardCoursesState createState() => _CustomCardCoursesState();
@@ -191,7 +193,7 @@ class _CustomCardCoursesState extends State<CustomCardCourses> {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: <Widget>[
                         Text(
-                          "Starts in",
+                          widget.started,
                           textAlign: TextAlign.right,
                           style: TextStyle(
                             fontSize: 20.0,
@@ -939,8 +941,15 @@ End date : $edate''',
   }
 
   Future checkAndUpdate() async {
+    List<String> caseSearchList = List();
+    String temp = "";
+    for (int i = 0; i < ctitle.length; i++) {
+      temp = temp + ctitle[i];
+      caseSearchList.add(temp);
+    }
+    // return caseSearchList;
     Crud().addCourseData(ctitle, cdesc, sdate, edate, radioButtonItem, offevent,
-        imgUrl, _startdate, reqfields, paymentamount);
+        imgUrl, _startdate, reqfields, paymentamount, caseSearchList);
   }
 
   Widget offlineEvent() {

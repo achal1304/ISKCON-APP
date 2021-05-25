@@ -137,12 +137,13 @@ class _AddCoursesState extends State<AddCourses> {
                             width: 32.0),
                         borderRadius: BorderRadius.circular(25.0),
                       ),
-                    ),validator: (description) {
-                    if (description.isEmpty) {
-                      return 'Please enter some description';
-                    }
-                    return null;
-                  },
+                    ),
+                    validator: (description) {
+                      if (description.isEmpty) {
+                        return 'Please enter some description';
+                      }
+                      return null;
+                    },
                   ),
                 ),
                 SizedBox(
@@ -439,15 +440,23 @@ Course end date : $edate''',
     );
   }
 
-  radioButtonCheck(){
-    if(radioButtonItemPay == "Paid"){
+  radioButtonCheck() {
+    if (radioButtonItemPay == "Paid") {
       paymentamount = int.parse(paidevent.text);
-    }
-    else paymentamount = 0;
+    } else
+      paymentamount = 0;
   }
+
   checkAndUpdate() async {
+    List<String> caseSearchList = List();
+    String temp = "";
+    for (int i = 0; i < ctitle.length; i++) {
+      temp = temp + ctitle[i];
+      caseSearchList.add(temp);
+    }
+    // return caseSearchList;
     Crud().addCourseData(ctitle, cdesc, sdate, edate, radioButtonItem, offevent,
-        imgUrl, _startdate, reqfields, paymentamount);
+        imgUrl, _startdate, reqfields, paymentamount, caseSearchList);
   }
 
   Widget offlineEvent() {

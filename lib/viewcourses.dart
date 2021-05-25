@@ -22,6 +22,7 @@ class ViewCourses extends StatefulWidget {
 class _ViewCoursesState extends State<ViewCourses> {
   dynamic data;
   bool admincheck;
+  String name;
 
   Future<dynamic> getUserName() async {
     final DocumentReference document =
@@ -46,10 +47,16 @@ class _ViewCoursesState extends State<ViewCourses> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text(
-          'Join Courses',
-          style: TextStyle(color: Colors.black),
-          textScaleFactor: 1.2,
+        title: Card(
+          child: TextField(
+            decoration: InputDecoration(
+                prefixIcon: Icon(Icons.search), hintText: 'Search...'),
+            onChanged: (val) {
+              setState(() {
+                name = val;
+              });
+            },
+          ),
         ),
         backgroundColor: Colors.white,
         elevation: 0.5,
@@ -125,10 +132,16 @@ class _ViewCoursesState extends State<ViewCourses> {
       return Container(
         padding: const EdgeInsets.all(10.0),
         child: StreamBuilder<QuerySnapshot>(
-          stream: Firestore.instance
-              .collection('Courses')
-              .orderBy('Startdatetimestamp')
-              .snapshots(),
+          stream: (name != "" && name != null)
+              ? Firestore.instance
+                  .collection('Courses')
+                  .where("Case Search", arrayContains: name)
+                  .orderBy('Startdatetimestamp', descending: true)
+                  .snapshots()
+              : Firestore.instance
+                  .collection('Courses')
+                  .orderBy('Startdatetimestamp', descending: true)
+                  .snapshots(),
           builder:
               (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
             if (snapshot.hasError) return Text('Error: ${snapshot.error}');
@@ -143,28 +156,37 @@ class _ViewCoursesState extends State<ViewCourses> {
                     DateTime daystartts = daystart.toDate();
                     int daysrem = daystartts.difference(DateTime.now()).inDays;
                     int payamount = document['Course fees'];
+                    // String daysremain = daysrem.toString();
+                    String started;
+                    if (daysrem.isNegative) {
+                      started = "Started before";
+                      daysrem = daysrem.abs();
+                    } else {
+                      started = "Starts in";
+                    }
                     String daysremain = daysrem.toString();
+
                     return Card(
                       color: Color(0xffffffff),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(Radius.circular(10))),
                       child: CustomCardCourses(
-                        title: document['Course Title'],
-                        description: document['Course Description'],
-                        //topic: document['Topic'],
-                        context: context,
-                        isAdmin1: admincheck,
-                        edate: document['End Date'],
-                        stime: document['Start Date'],
-                        url: document['URL'],
-                        type: document['Type'],
-                        venue: document['Venue'],
-                        startdatetimestamp: daysremain,
-                        useremail: widget._user.email,
-                        usercoursename: widget._user.displayName,
-                        regform: document['Registration Form'],
-                        payamount: payamount,
-                      ),
+                          title: document['Course Title'],
+                          description: document['Course Description'],
+                          //topic: document['Topic'],
+                          context: context,
+                          isAdmin1: admincheck,
+                          edate: document['End Date'],
+                          stime: document['Start Date'],
+                          url: document['URL'],
+                          type: document['Type'],
+                          venue: document['Venue'],
+                          startdatetimestamp: daysremain,
+                          useremail: widget._user.email,
+                          usercoursename: widget._user.displayName,
+                          regform: document['Registration Form'],
+                          payamount: payamount,
+                          started: started),
                     );
                   }).toList(),
                 );
@@ -176,12 +198,20 @@ class _ViewCoursesState extends State<ViewCourses> {
       return Container(
         padding: const EdgeInsets.all(10.0),
         child: StreamBuilder<QuerySnapshot>(
-          stream: Firestore.instance
-              .collection('Courses')
-              .where('Startdatetimestamp',
-                  isGreaterThanOrEqualTo: Timestamp.now())
-              .orderBy('Startdatetimestamp')
-              .snapshots(),
+          stream: (name != "" && name != null)
+              ? Firestore.instance
+                  .collection('Courses')
+                  .where('Startdatetimestamp',
+                      isGreaterThanOrEqualTo: Timestamp.now())
+                  .where("Case Search", arrayContains: name)
+                  .orderBy('Startdatetimestamp')
+                  .snapshots()
+              : Firestore.instance
+                  .collection('Courses')
+                  .where('Startdatetimestamp',
+                      isGreaterThanOrEqualTo: Timestamp.now())
+                  .orderBy('Startdatetimestamp')
+                  .snapshots(),
           builder:
               (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
             if (snapshot.hasError) return Text('Error: ${snapshot.error}');
@@ -196,28 +226,36 @@ class _ViewCoursesState extends State<ViewCourses> {
                     DateTime daystartts = daystart.toDate();
                     int daysrem = daystartts.difference(DateTime.now()).inDays;
                     int payamount = document['Course fees'];
+
+                    String started;
+                    if (daysrem.isNegative) {
+                      started = "Started before";
+                      daysrem = daysrem.abs();
+                    } else {
+                      started = "Starts in";
+                    }
                     String daysremain = daysrem.toString();
                     return Card(
                       color: Color(0xffffffff),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(Radius.circular(10))),
                       child: CustomCardCourses(
-                        title: document['Course Title'],
-                        description: document['Course Description'],
-                        //topic: document['Topic'],
-                        context: context,
-                        isAdmin1: admincheck,
-                        edate: document['End Date'],
-                        stime: document['Start Date'],
-                        url: document['URL'],
-                        type: document['Type'],
-                        venue: document['Venue'],
-                        startdatetimestamp: daysremain,
-                        useremail: widget._user.email,
-                        usercoursename: widget._user.displayName,
-                        regform: document['Registration Form'],
-                        payamount: payamount,
-                      ),
+                          title: document['Course Title'],
+                          description: document['Course Description'],
+                          //topic: document['Topic'],
+                          context: context,
+                          isAdmin1: admincheck,
+                          edate: document['End Date'],
+                          stime: document['Start Date'],
+                          url: document['URL'],
+                          type: document['Type'],
+                          venue: document['Venue'],
+                          startdatetimestamp: daysremain,
+                          useremail: widget._user.email,
+                          usercoursename: widget._user.displayName,
+                          regform: document['Registration Form'],
+                          payamount: payamount,
+                          started: started),
                     );
                   }).toList(),
                 );

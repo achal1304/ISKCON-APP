@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -24,12 +26,14 @@ class AddAudioState extends State<AddAudio> {
   TextEditingController _chosenValue = TextEditingController();
   TextEditingController controller = TextEditingController();
   String _path;
+  String existingfolder;
   Map<String, String> _paths;
   String _extension;
   FileType _pickType = FileType.audio;
   bool _multiPick = false;
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
   List<StorageUploadTask> _tasks = <StorageUploadTask>[];
+  bool isEditable = false;
 
   void openFileExplorer() async {
     name = controller.text;
@@ -44,6 +48,12 @@ class AddAudioState extends State<AddAudio> {
     String fileName = _path.split('/').last;
     String filePath = _path;
     List<String> arr = [];
+    String finalfolder;
+    if (isEditable == true && _chosenValue.text.isNotEmpty) {
+      finalfolder = _chosenValue.text;
+    } else if (isEditable == false) {
+      finalfolder = existingfolder;
+    }
     for (int i = 0; i < name.length; i++) {
       arr.insert(i, name.substring(0, name.length - i));
     }
@@ -51,8 +61,8 @@ class AddAudioState extends State<AddAudio> {
     upload(fileName, filePath).then((v) {
       setState(() {
         fileUrl = v;
-        Crud().addAudioUrl(name, fileUrl, _chosenValue.text, arr);
-        Crud().addFolderList(_chosenValue.text);
+        Crud().addAudioUrl(name, fileUrl, finalfolder, arr);
+        Crud().addFolderList(finalfolder);
       });
     });
   }
@@ -134,38 +144,108 @@ class AddAudioState extends State<AddAudio> {
             //     });
             //   },
             // ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-              child: TextFormField(
-                autofocus: true,
-                controller: _chosenValue,
-                cursorColor: Colors.blue,
-                decoration: InputDecoration(
-                  hintText: 'Create New Folder',
-                  labelStyle: TextStyle(color: Colors.orangeAccent),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(
-                      color: Colors.blue,
+            Row(
+              children: <Widget>[
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                    child: TextFormField(
+                      autofocus: true,
+                      controller: _chosenValue,
+                      cursorColor: Colors.blue,
+                      enabled: isEditable,
+                      decoration: InputDecoration(
+                        hintText: 'Create New Folder',
+                        labelStyle: TextStyle(color: Colors.orangeAccent),
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.blue,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ),
-              ),
+                Container(
+                  margin: EdgeInsets.only(left: 8),
+                  child: IconButton(
+                    icon: Icon(
+                      isEditable ? Icons.check : Icons.edit,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        isEditable = !isEditable;
+                      });
+                    },
+                  ),
+                )
+              ],
             ),
+
             SizedBox(
               height: 15,
             ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-              child: TextFormField(
-                autofocus: true,
-                controller: controller,
-                cursorColor: Colors.blue,
-                decoration: InputDecoration(
-                  hintText: 'Name',
-                  labelStyle: TextStyle(color: Colors.orangeAccent),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(
-                      color: Colors.blue,
+            StreamBuilder<QuerySnapshot>(
+                stream:
+                    Firestore.instance.collection('FolderNames').snapshots(),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData)
+                    return Center(
+                      child: CupertinoActivityIndicator(),
+                    );
+
+                  return Container(
+                    padding: EdgeInsets.only(bottom: 16.0),
+                    child: Row(
+                      children: <Widget>[
+                        Expanded(
+                            flex: 2,
+                            child: Container(
+                              padding:
+                                  EdgeInsets.fromLTRB(12.0, 10.0, 10.0, 10.0),
+                              child: Text(
+                                "Existing Folders",
+                              ),
+                            )),
+                        new Expanded(
+                          flex: 4,
+                          child: DropdownButton(
+                            value: existingfolder,
+                            isDense: true,
+                            onChanged: (valueSelectedByUser) {
+                              _onShopDropItemSelected(valueSelectedByUser);
+                            },
+                            hint: Text('Choose existing folder'),
+                            items: snapshot.data.documents
+                                .map((DocumentSnapshot document) {
+                              return DropdownMenuItem<String>(
+                                value: document.documentID.toString(),
+                                child: Text(document.documentID.toString()),
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }),
+            SizedBox(
+              height: 15,
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                child: TextFormField(
+                  autofocus: true,
+                  controller: controller,
+                  cursorColor: Colors.blue,
+                  decoration: InputDecoration(
+                    hintText: 'File Name',
+                    labelStyle: TextStyle(color: Colors.orangeAccent),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.blue,
+                      ),
                     ),
                   ),
                 ),
@@ -219,6 +299,12 @@ class AddAudioState extends State<AddAudio> {
         ),
       ),
     );
+  }
+
+  void _onShopDropItemSelected(String newValueSelected) {
+    setState(() {
+      this.existingfolder = newValueSelected;
+    });
   }
 
   Future<void> downloadFile(StorageReference ref) async {

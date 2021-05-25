@@ -157,7 +157,8 @@ class Crud {
       String url,
       DateTime sd,
       var arr,
-      int paymentamount) async {
+      int paymentamount,
+      var casesearch) async {
     DocumentReference documentRef =
         Firestore.instance.collection("Courses").document(desc);
     Firestore.instance.runTransaction(
@@ -172,7 +173,8 @@ class Crud {
           'Type': Type,
           'Venue': venue,
           'Registration Form': arr,
-          'Course fees': paymentamount
+          'Course fees': paymentamount,
+          'Case Search': casesearch
         });
         print("Course Data added!");
       },
